@@ -21,18 +21,28 @@ RSpec.describe ArticlesController do
   end
 
   describe 'GET index' do
-    skip 'is succesful' do
+    before(:each) { get :index }
+    it 'is succesful' do
+      expect(response.status).to eq(200)
     end
 
-    skip 'renders a JSON response' do
+    it 'renders a JSON response' do
+      articles_collection = JSON.parse(response.body)
+      expect(articles_collection).not_to be_nil
     end
   end
 
   describe 'GET show' do
-    skip 'is successful' do
+    it 'is successful' do
+      get :show, id: article.id
+      expect(response.status).to eq(200)
     end
 
-    skip 'renders a JSON response' do
+    it 'renders a JSON response' do
+      get :show, id: article.id
+      article_response = JSON.parse(response.body)
+      expect(article_response).not_to be_nil
+      expect(article_response['id']).not_to be_nil
     end
   end
 
@@ -41,10 +51,19 @@ RSpec.describe ArticlesController do
       post :create, article: article_params, format: :json
     end
 
-    skip 'is successful' do
+    it 'is successful' do
+      expect(response).to be_success
     end
 
-    skip 'renders a JSON response' do
+    it 'returns 201' do
+      expect(response).to be_success
+      expect(response.status).to eq(201)
+    end
+
+    it 'renders a JSON response' do
+      article_response = JSON.parse(response.body)
+      expect(article_response).not_to be_nil
+      expect(article_response['title']).to eq(article_params[:title])
     end
   end
 
@@ -57,11 +76,12 @@ RSpec.describe ArticlesController do
       patch :update, id: article.id, article: article_diff, format: :json
     end
 
-    skip 'is successful' do
+    it 'is successful' do
+      expect(response.status).to eq(204)
     end
 
-    skip 'renders a JSON response' do
-    end
+    # skip 'renders a JSON response' do
+    # end
   end
 
   describe 'DELETE destroy' do
